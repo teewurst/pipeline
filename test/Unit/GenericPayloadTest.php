@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace teewurst\Pipeline\test\Unit;
 
-use teewurst\Pipeline\GenericPayload;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use teewurst\Pipeline\GenericPayload;
 
 /**
  * Class GenericPayloadTest
@@ -13,6 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class GenericPayloadTest extends TestCase
 {
+    use ProphecyTrait;
 
     /**
      * @test

@@ -7,6 +7,7 @@ namespace teewurst\Pipeline\test\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use teewurst\Pipeline\GenericPayload;
 use teewurst\Pipeline\PayloadInterface;
 use teewurst\Pipeline\PipelineInterface;
@@ -20,6 +21,8 @@ use teewurst\Pipeline\TaskInterface;
  */
 class CreateAndInterruptByReturnTest extends TestCase
 {
+    use ProphecyTrait;
+
     private const CUSTOM_EXCEPTION = 'CustomException';
 
     /**

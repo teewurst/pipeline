@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace teewurst\Pipeline\test\Unit;
 
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use teewurst\Pipeline\PayloadInterface;
 use teewurst\Pipeline\Pipeline;
 use teewurst\Pipeline\RecursivePipeline;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class RecursivePipelineTest
@@ -15,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RecursivePipelineTest extends TestCase
 {
+    use ProphecyTrait;
 
     /**
      * @test

@@ -8,6 +8,8 @@ namespace teewurst\Pipeline;
  *
  * Contains a certain amount of tasks to be executed
  *
+ * @template T of \teewurst\Pipeline\PayloadInterface
+ *
  * @package teewurst\Pipeline
  * @author  Martin Ruf <Martin.Ruf@check24.de>
  */
@@ -17,27 +19,27 @@ interface PipelineInterface
     /**
      * Adds a new Task to the pipeline
      *
-     * @param TaskInterface $task Task to be added
+     * @param TaskInterface<T> $task Task to be added
      *
      * @return void
      */
-    public function add(TaskInterface $task): void;
+    public function add($task): void;
 
     /**
      * Shifts the currect task from the pipeline, and removes it from execution
      *
-     * @return TaskInterface|null
+     * @return TaskInterface<T>|null
      */
     public function next(): ?TaskInterface;
 
     /**
      * Start execution of all tasks within the pipeline
      *
-     * @param PayloadInterface $payload Payload to be passed through all tasks
+     * @param T $payload Payload to be passed through all tasks
      *
-     * @return PayloadInterface
+     * @return T
      */
-    public function handle(PayloadInterface $payload): PayloadInterface;
+    public function handle($payload);
 
     /**
      * Set Config for your pipeline, which is accessible from your tasks

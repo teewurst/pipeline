@@ -6,6 +6,8 @@ namespace teewurst\Pipeline;
 /**
  * Interface TaskInterface
  *
+ * @template T of PayloadInterface
+ *
  * @package teewurst\Pipeline
  * @author  Martin Ruf <Martin.Ruf@check24.de>
  */
@@ -15,10 +17,10 @@ interface TaskInterface
     /**
      * Action or single Task to be done in this step
      *
-     * @param PayloadInterface  $payload  Payload containing all Information necessary for this action
+     * @param T                 $payload  Payload containing all Information necessary for this action
      * @param PipelineInterface $pipeline Pipeline currently executed
      *
-     * @return PayloadInterface
+     * @return T
      */
-    public function __invoke(PayloadInterface $payload, PipelineInterface $pipeline): PayloadInterface;
+    public function __invoke($payload, PipelineInterface $pipeline);
 }

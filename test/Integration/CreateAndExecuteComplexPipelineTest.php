@@ -6,6 +6,7 @@ namespace teewurst\Pipeline\test\Integration;
 
 use PHPStan\Testing\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use teewurst\Pipeline\GenericPayload;
 use teewurst\Pipeline\PayloadInterface;
 use teewurst\Pipeline\PipelineInterface;
@@ -19,6 +20,7 @@ use teewurst\Pipeline\TaskInterface;
  */
 class CreateAndExecuteComplexPipelineTest extends TestCase
 {
+    use ProphecyTrait;
 
     /**
      * @test
@@ -71,9 +73,9 @@ class CreateAndExecuteComplexPipelineTest extends TestCase
             Argument::type(PipelineInterface::class)
         )->shouldBeCalled()->will(
             function ($args) use ($options, $self) {
-                /** @var PipelineInterface $pipeline */
+                /** @var PipelineInterface<GenericPayload> $pipeline */
                 $pipeline = $args[1];
-                /** @var PayloadInterface $payload */
+                /** @var GenericPayload $payload */
                 $payload = $args[0];
 
                 // check access to options

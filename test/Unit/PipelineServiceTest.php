@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace teewurst\Pipeline\test\Unit;
 
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 use teewurst\Pipeline\Pipeline;
 use teewurst\Pipeline\PipelineService;
-use PHPUnit\Framework\TestCase;
 use teewurst\Pipeline\TaskInterface;
 
 /**
@@ -17,6 +18,7 @@ use teewurst\Pipeline\TaskInterface;
  */
 class PipelineServiceTest extends TestCase
 {
+    use ProphecyTrait;
 
     /**
      * @test
