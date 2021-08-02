@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace teewurst\Pipeline\test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use teewurst\Pipeline\PayloadInterface;
 use teewurst\Pipeline\Pipeline;
+use teewurst\Pipeline\PipelineInterface;
 use teewurst\Pipeline\TaskInterface;
 
 /**
@@ -22,7 +24,7 @@ class PipelineTest extends TestCase
      * @test
      * @return void
      */
-    public function checkIfUnshiftsReducesTheKeystore(): void
+    public function checkIfNextReducesTheKeystore(): void
     {
         $testArray = [
             $this->prophesize(TaskInterface::class)->reveal(),
@@ -128,5 +130,35 @@ class PipelineTest extends TestCase
         $this->expectException(\Exception::class);
 
         $pipeline->handle($payload->reveal());
+    }
+
+    /** @test */
+    public function checkIfPipelineCanBeExecutedMultipleTimes(): void
+    {
+        $payloadMock = $this->prophesize(PayloadInterface::class);
+
+        $taskBuilder = function () use ($payloadMock): TaskInterface {
+            $taskMock = $this->prophesize(TaskInterface::class);
+
+            $taskMock->__invoke(
+                    $payloadMock->reveal(),
+                    Argument::type(PipelineInterface::class)
+                )->shouldBeCalledTimes(2)
+                ->will(function ($args) {
+                    return $args[1]->handle($args[0]);
+                }); // assertion
+
+            return $taskMock->reveal();
+        };
+
+        $tasks = [
+            $taskBuilder(),
+            $taskBuilder(),
+            $taskBuilder(),
+        ];
+
+        $pipeline = new Pipeline($tasks);
+        $pipeline->handle($payloadMock->reveal());
+        $pipeline->handle($payloadMock->reveal());
     }
 }
