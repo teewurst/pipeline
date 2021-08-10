@@ -141,9 +141,9 @@ class PipelineTest extends TestCase
             $taskMock = $this->prophesize(TaskInterface::class);
 
             $taskMock->__invoke(
-                    $payloadMock->reveal(),
-                    Argument::type(PipelineInterface::class)
-                )->shouldBeCalledTimes(2)
+                $payloadMock->reveal(),
+                Argument::type(PipelineInterface::class)
+            )->shouldBeCalledTimes(2)
                 ->will(function ($args) {
                     return $args[1]->handle($args[0]);
                 }); // assertion
@@ -160,5 +160,56 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline($tasks);
         $pipeline->handle($payloadMock->reveal());
         $pipeline->handle($payloadMock->reveal());
+    }
+
+    /** @test */
+    public function checkIfPipelineCanBeExecutedMultipleTimesEvenOnException(): void
+    {
+        $payloadMock = $this->prophesize(PayloadInterface::class);
+
+        $taskBuilder = function () use ($payloadMock): TaskInterface {
+            $taskMock = $this->prophesize(TaskInterface::class);
+
+            $taskMock->__invoke(
+                $payloadMock->reveal(),
+                Argument::type(PipelineInterface::class)
+            )->shouldBeCalledTimes(2)
+                ->will(function ($args) {
+                    return $args[1]->handle($args[0]);
+                }); // assertion
+
+            return $taskMock->reveal();
+        };
+
+        $taskBuilderException = function () use ($payloadMock): TaskInterface {
+            $taskMock = $this->prophesize(TaskInterface::class);
+
+            $taskMock->__invoke(
+                $payloadMock->reveal(),
+                Argument::type(PipelineInterface::class)
+                )
+                ->shouldBeCalledTimes(2)
+                ->willThrow(new \Exception('test')); // assertion
+
+            return $taskMock->reveal();
+        };
+
+        $tasks = [
+            $taskBuilder(),
+            $taskBuilderException()
+        ];
+
+        $pipeline = new Pipeline($tasks);
+        try {
+            $pipeline->handle($payloadMock->reveal());
+        } catch (\Exception $exception) {
+            self::assertSame('test', $exception->getMessage());
+        }
+
+        try {
+            $pipeline->handle($payloadMock->reveal());
+        } catch (\Exception $exception) {
+            self::assertSame('test', $exception->getMessage());
+        }
     }
 }

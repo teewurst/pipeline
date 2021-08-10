@@ -91,9 +91,11 @@ class Pipeline implements PipelineInterface
             return $payload;
         }
 
-        $payload = $task($payload, $this);
-
-        array_unshift($this->tasks, $task);
+        try {
+            $payload = $task($payload, $this);
+        } finally {
+            array_unshift($this->tasks, $task);
+        }
 
         return $payload;
     }
