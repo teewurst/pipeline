@@ -8,7 +8,7 @@ namespace teewurst\Pipeline;
  *
  * Contains a certain amount of tasks to be executed
  *
- * @template T of \teewurst\Pipeline\PayloadInterface
+ * @template T
  *
  * @package teewurst\Pipeline
  * @author  Martin Ruf <Martin.Ruf@check24.de>
@@ -37,6 +37,7 @@ interface PipelineInterface
      *
      * @param T $payload Payload to be passed through all tasks
      *
+     * @phpstan-return T
      * @return T
      */
     public function handle($payload);
@@ -44,16 +45,16 @@ interface PipelineInterface
     /**
      * Set Config for your pipeline, which is accessible from your tasks
      *
-     * @param object $options
+     * @param array<mixed> $options
      *
      * @return void
      */
-    public function setOptions(object $options): void;
+    public function setOptions(array $options): void;
 
     /**
      * Returns configuration for your pipeline (exp env variables?)
      *
-     * @return object
+     * @return array<mixed>
      */
-    public function getOptions(): object;
+    public function getOptions(): array;
 }

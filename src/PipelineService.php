@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace teewurst\Pipeline;
 
 use Psr\Container\ContainerInterface;
+use teewurst\Pipeline\Pipeline;
 
 /**
  * Class PipelineService
  *
- * Create Pipeline by
+ * @template T
+ * @template P of \teewurst\Pipeline\PipelineInterface
+ * Create Pipeline by config array
  * @package teewurst\Pipeline
  * @author Martin Ruf <Martin.Ruf@check24.de>
  */
@@ -19,15 +22,21 @@ class PipelineService
     /**
      * Creates Pipeline by array and configuration
      *
-     * @param array  $tasks
-     * @param object $options
+     * @param array<TaskInterface<T>|array<TaskInterface<T>>> $tasks
+     * @param class-string<P> $classFn
+     * @param ?array<mixed> $options
      *
-     * @return PipelineInterface
+     * @return P
      */
-    public function create(array $tasks, object $options = null): PipelineInterface
+    public function create(array $tasks, string $classFn = Pipeline::class, array $options = null): PipelineInterface
     {
-        $pipeline = new Pipeline($this->createRecursive($tasks));
-        $pipeline->setOptions($options ?? new \stdClass());
+        $interfaces = class_implements($classFn);
+        if (!class_exists($classFn) || !$interfaces || !in_array(PipelineInterface::class, $interfaces, true)) {
+            throw new \RuntimeException("$classFn does not implement \\teewurst\\Pipeline\\PipelineInterface");
+        }
+
+        $pipeline = new $classFn($this->createRecursive($tasks));
+        $pipeline->setOptions($options ?? []);
 
         return $pipeline;
     }
@@ -36,42 +45,44 @@ class PipelineService
      * Uses a psr-11 Container (=Zend ServiceManager, =Laravel Serivemanager etc) to create all tasks
      *
      * @param ContainerInterface $serviceContainer
-     * @param array              $tasks
-     * @param object|null        $options
+     * @param array<class-string<TaskInterface<T>>|TaskInterface<T>|array<class-string<TaskInterface<T>>|TaskInterface<T>>> $tasks
+     * @param class-string<P> $classFn
+     * @param array<mixed>|null $options
      *
-     * @return PipelineInterface
+     * @return P
      */
-    public function createPsr11(ContainerInterface $serviceContainer, array $tasks, object $options = null)
+    public function createPsr11(ContainerInterface $serviceContainer, array $tasks, string $classFn = Pipeline::class, array $options = null): PipelineInterface
     {
         array_walk_recursive(
             $tasks,
-            function (&$value) use ($serviceContainer) {
+            static function (&$value) use ($serviceContainer) {
                 if (is_string($value)) {
                     $value = $serviceContainer->get($value);
                 }
             }
         );
-
-        return $this->create($tasks, $options ?? new \stdClass());
+        /** @var array<TaskInterface<T>|array<TaskInterface<T>>> $tasks php stan does not understand this replaces the strings by its class equivalent */
+        return $this->create($tasks, $classFn, $options ?? []);
     }
 
     /**
      * Recursively transform task array to valid pipeline
      *
-     * @param array $tasks
-     * @return array
+     * @param array<TaskInterface<T>|array<TaskInterface<T>>> $tasks
+     * @return array<TaskInterface<T>>
      */
     private function createRecursive(array $tasks): array
     {
-        foreach ($tasks as &$task) {
+        foreach ($tasks as $i => $task) {
             if (is_array($task)) {
                 $task = new RecursivePipeline($this->createRecursive($task));
             }
             if (!$task instanceof TaskInterface) {
                 throw new \InvalidArgumentException('A task does not implement teewurst\Pipeline\TaskInterface');
             }
+            $tasks[$i] = $task;
         }
-
+        /** @var array<TaskInterface<T>> $tasks */
         return $tasks;
     }
 

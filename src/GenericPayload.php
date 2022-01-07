@@ -14,14 +14,14 @@ namespace teewurst\Pipeline;
  */
 class GenericPayload implements PayloadInterface
 {
-    /** @var array Contains all keys stored in payload*/
+    /** @var array<mixed> Contains all keys stored in payload*/
     private $keystore = [];
 
     /**
      * Offers Magic accessor to keystore
      *
      * @param string $name Function Name as setter or gget
-     * @param array $arguments Arguments passed into the function
+     * @param array<mixed> $arguments Arguments passed into the function
      *
      * @return mixed
      * @throws \BadMethodCallException

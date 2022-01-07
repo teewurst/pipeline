@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace teewurst\Pipeline\test\Integration;
 
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use teewurst\Pipeline\GenericPayload;
 use teewurst\Pipeline\PayloadInterface;
+use teewurst\Pipeline\Pipeline;
 use teewurst\Pipeline\PipelineInterface;
 use teewurst\Pipeline\PipelineService;
 use teewurst\Pipeline\TaskInterface;
@@ -34,7 +35,7 @@ class CreateAndExecuteComplexPipelineTest extends TestCase
 
         $pipelineService = new PipelineService();
 
-        $options = (object)['any' => 'test'];
+        $options = ['any' => 'test'];
         $pipeline = $pipelineService->create(
             [
                 $this->createTestTaskMock($options),
@@ -52,6 +53,7 @@ class CreateAndExecuteComplexPipelineTest extends TestCase
                     $this->createTestTaskMock($options)
                 ]
             ],
+            Pipeline::class,
             $options
         );
 
@@ -66,7 +68,8 @@ class CreateAndExecuteComplexPipelineTest extends TestCase
      * @return object|TaskInterface
      */
     public function createTestTaskMock($options) {
-        $task = $this->prophesize(TaskInterface::class);
+        $task = $this->prophesize(TaskInterface::class)
+            ->willImplement(TaskInterface::class);
         $self = $this;
         $task->__invoke(
             Argument::type(PayloadInterface::class),

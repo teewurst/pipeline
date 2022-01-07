@@ -14,23 +14,13 @@ namespace teewurst\Pipeline;
  * @package teewurst\Pipeline
  * @author  Martin Ruf <Martin.Ruf@check24.de>
  */
-class Pipeline implements PipelineInterface
+class PipelineTrait implements PipelineInterface
 {
 
     /** @var TaskInterface<T>[] */
     private $tasks;
     /** @var array<mixed> */
     private $options;
-
-    /**
-     * DefaultPipelineTrait constructor.
-     *
-     * @param TaskInterface<T>[] $tasks Array of tasks
-     */
-    public function __construct(array $tasks = [])
-    {
-        $this->tasks = $tasks;
-    }
 
     /**
      * Adds a new Task to the pipeline
