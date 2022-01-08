@@ -32,7 +32,7 @@ class RecursivePipelineTest extends TestCase
                 return $args[0];
             }
         );
-        $obj = (object)['any' => 'object'];
+        $obj = ['any' => 'object'];
         $pipeline->getOptions()->willReturn($obj);
 
         $recursivePipe = new RecursivePipeline();

@@ -26,10 +26,10 @@ class PipelineServiceTest extends TestCase
      */
     public function checkIfOptionsArePassedIntoPipeline(): void
     {
-        $options = (object)['any' => 'options'];
+        $options = ['any' => 'options'];
 
         $pipelineService = new PipelineService();
-        $pipeline = $pipelineService->create([], $options);
+        $pipeline = $pipelineService->create([], Pipeline::class, $options);
 
         self::assertSame($options, $pipeline->getOptions());
     }

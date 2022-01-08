@@ -8,7 +8,8 @@ namespace teewurst\Pipeline;
  *
  * Class to build up recursive pipelines, so you are able to create abstracted structure within a pipeline
  *
- * @template T of PayloadInterface
+ * @template T
+ * @extends Pipeline<T>
  * @implements TaskInterface<T>
  *
  * @package teewurst\Pipeline

@@ -11,14 +11,14 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "psr/container": "^1.0"
+        "psr/container": "^1.0|^2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^9.5",
-        "phpstan/phpstan": "^0.12.93",
-        "phpstan/phpstan-phpunit": "^0.12.21",
-        "jangregor/phpstan-prophecy": "^0.8.1",
+        "phpstan/phpstan": "^1",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "jangregor/phpstan-prophecy": "^1.0",
         "phpspec/prophecy-phpunit": "^2.0"
     },
     "autoload": {
@@ -32,7 +32,7 @@
         }
     },
     "scripts": {
-        "analyse": "phpstan analyse -l 4 src",
+        "analyse": "phpstan analyse src -l 9",
         "test": "phpunit -c phpunit.xml",
         "coverage": "phpunit -c phpunit.xml --coverage-clover=coverage.xml"
     }
