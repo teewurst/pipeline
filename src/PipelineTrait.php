@@ -14,7 +14,7 @@ namespace teewurst\Pipeline;
  * @package teewurst\Pipeline
  * @author  Martin Ruf <Martin.Ruf@check24.de>
  */
-class PipelineTrait implements PipelineInterface
+trait PipelineTrait
 {
 
     /** @var TaskInterface<T>[] */
