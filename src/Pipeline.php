@@ -18,13 +18,4 @@ class Pipeline implements PipelineInterface
 {
     /** @use PipelineTrait<T> */
     use PipelineTrait;
-    /**
-     * DefaultPipelineTrait constructor.
-     *
-     * @param TaskInterface<T>[] $tasks Array of tasks
-     */
-    public function __construct(array $tasks = [])
-    {
-        $this->tasks = $tasks;
-    }
 }

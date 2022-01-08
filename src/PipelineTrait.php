@@ -23,6 +23,16 @@ trait PipelineTrait
     private $options;
 
     /**
+     * DefaultPipelineTrait constructor.
+     *
+     * @param TaskInterface<T>[] $tasks Array of tasks
+     */
+    public function __construct(array $tasks = [])
+    {
+        $this->tasks = $tasks;
+    }
+
+    /**
      * Adds a new Task to the pipeline
      *
      * @param TaskInterface<T> $task Task to be added
