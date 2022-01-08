@@ -23,19 +23,19 @@ class PipelineService
      * Creates Pipeline by array and configuration
      *
      * @param array<TaskInterface<T>|array<TaskInterface<T>>> $tasks
-     * @param class-string<P> $classFn
+     * @param class-string<P> $classFqn
      * @param ?array<mixed> $options
      *
      * @return P
      */
-    public function create(array $tasks, string $classFn = Pipeline::class, array $options = null): PipelineInterface
+    public function create(array $tasks, string $classFqn = Pipeline::class, array $options = null): PipelineInterface
     {
-        $interfaces = class_implements($classFn);
-        if (!class_exists($classFn) || !$interfaces || !in_array(PipelineInterface::class, $interfaces, true)) {
-            throw new \RuntimeException("$classFn does not implement \\teewurst\\Pipeline\\PipelineInterface");
+        $interfaces = class_implements($classFqn);
+        if (!class_exists($classFqn) || !$interfaces || !in_array(PipelineInterface::class, $interfaces, true)) {
+            throw new \RuntimeException("$classFqn does not implement \\teewurst\\Pipeline\\PipelineInterface");
         }
 
-        $pipeline = new $classFn($this->createRecursive($tasks));
+        $pipeline = new $classFqn($this->createRecursive($tasks));
         $pipeline->setOptions($options ?? []);
 
         return $pipeline;
@@ -46,12 +46,12 @@ class PipelineService
      *
      * @param ContainerInterface $serviceContainer
      * @param array<class-string<TaskInterface<T>>|TaskInterface<T>|array<class-string<TaskInterface<T>>|TaskInterface<T>>> $tasks
-     * @param class-string<P> $classFn
+     * @param class-string<P> $classFqn
      * @param array<mixed>|null $options
      *
      * @return P
      */
-    public function createPsr11(ContainerInterface $serviceContainer, array $tasks, string $classFn = Pipeline::class, array $options = null): PipelineInterface
+    public function createPsr11(ContainerInterface $serviceContainer, array $tasks, string $classFqn = Pipeline::class, array $options = null): PipelineInterface
     {
         array_walk_recursive(
             $tasks,
@@ -62,7 +62,7 @@ class PipelineService
             }
         );
         /** @var array<TaskInterface<T>|array<TaskInterface<T>>> $tasks php stan does not understand this replaces the strings by its class equivalent */
-        return $this->create($tasks, $classFn, $options ?? []);
+        return $this->create($tasks, $classFqn, $options ?? []);
     }
 
     /**
