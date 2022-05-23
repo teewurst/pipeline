@@ -35,7 +35,7 @@ class PipelineService
             throw new \RuntimeException("$classFqn does not implement \\teewurst\\Pipeline\\PipelineInterface");
         }
 
-        $pipeline = new $classFqn($this->createRecursive($tasks));
+        $pipeline = new $classFqn(self::createRecursive($tasks));
         $pipeline->setOptions($options ?? []);
 
         return $pipeline;
@@ -62,7 +62,7 @@ class PipelineService
             }
         );
         /** @var array<TaskInterface<T>|array<TaskInterface<T>>> $tasks php stan does not understand this replaces the strings by its class equivalent */
-        return $this->create($tasks, $classFqn, $options ?? []);
+        return self::create($tasks, $classFqn, $options ?? []);
     }
 
     /**
@@ -75,7 +75,7 @@ class PipelineService
     {
         foreach ($tasks as $i => $task) {
             if (is_array($task)) {
-                $task = new RecursivePipeline($this->createRecursive($task));
+                $task = new RecursivePipeline(self::createRecursive($task));
             }
             if (!$task instanceof TaskInterface) {
                 throw new \InvalidArgumentException('A task does not implement teewurst\Pipeline\TaskInterface');
